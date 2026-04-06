@@ -5,15 +5,23 @@
 #include "Config.h"
 
 namespace {
+// HID descriptor matching 3Dconnexion SpaceMouse Pro Wireless protocol.
+// This allows native recognition by 3DxWare drivers and CAD applications.
 const uint8_t kHidReportDescriptor[] PROGMEM = {
     0x05, 0x01,        // USAGE_PAGE (Generic Desktop)
     0x09, 0x08,        // USAGE (Multi-axis Controller)
     0xA1, 0x01,        // COLLECTION (Application)
+
+    // --- Report ID 1: 6-axis motion (translation + rotation) ---
     0xA1, 0x00,        // COLLECTION (Physical)
     0x85, 0x01,        // REPORT_ID (1)
     0x16, 0xA2, 0xFE,  // LOGICAL_MINIMUM  (-350)
     0x26, 0x5E, 0x01,  // LOGICAL_MAXIMUM  (350)
-    0x09, 0x30,        // USAGE (X)     
+    0x36, 0x88, 0xFA,  // PHYSICAL_MINIMUM (-1400)
+    0x46, 0x78, 0x05,  // PHYSICAL_MAXIMUM (1400)
+    0x55, 0x0C,        // UNIT_EXPONENT (-4)
+    0x65, 0x11,        // UNIT (SI Linear: Centimeter)
+    0x09, 0x30,        // USAGE (X)
     0x09, 0x31,        // USAGE (Y)
     0x09, 0x32,        // USAGE (Z)
     0x09, 0x33,        // USAGE (Rx)
@@ -23,6 +31,8 @@ const uint8_t kHidReportDescriptor[] PROGMEM = {
     0x95, 0x06,        // REPORT_COUNT (6)
     0x81, 0x02,        // INPUT (Data,Var,Abs)
     0xC0,              // END_COLLECTION
+
+    // --- Report ID 3: Buttons (2 buttons + padding) ---
     0xA1, 0x00,        // COLLECTION (Physical)
     0x85, 0x03,        // REPORT_ID (3)
     0x05, 0x09,        // USAGE_PAGE (Button)
@@ -36,6 +46,22 @@ const uint8_t kHidReportDescriptor[] PROGMEM = {
     0x95, 0x0E,        // REPORT_COUNT (14) padding
     0x81, 0x01,        // INPUT (Const,Array,Abs)
     0xC0,              // END_COLLECTION
+
+    // --- Report ID 4: LED output (Generic Indicator) ---
+    0xA1, 0x02,        // COLLECTION (Logical)
+    0x85, 0x04,        // REPORT_ID (4)
+    0x05, 0x08,        // USAGE_PAGE (LED)
+    0x09, 0x4B,        // USAGE (Generic Indicator)
+    0x15, 0x00,        // LOGICAL_MINIMUM (0)
+    0x25, 0x01,        // LOGICAL_MAXIMUM (1)
+    0x95, 0x01,        // REPORT_COUNT (1)
+    0x75, 0x01,        // REPORT_SIZE (1)
+    0x91, 0x02,        // OUTPUT (Data,Var,Abs)
+    0x95, 0x01,        // REPORT_COUNT (1)
+    0x75, 0x07,        // REPORT_SIZE (7)
+    0x91, 0x03,        // OUTPUT (Const,Var,Abs) padding
+    0xC0,              // END_COLLECTION
+
     0xC0               // END_COLLECTION
 };
 }
